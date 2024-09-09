@@ -5,6 +5,8 @@ import {
   FormContainer,
   HomeContainer,
   Separator,
+  TaskInput,
+  MinutesAmountInput,
 } from "./styles";
 
 export function Home() {
@@ -13,10 +15,18 @@ export function Home() {
       <form action="">
         <FormContainer>
           <label htmlFor="task">Vou trabalhar em</label>
-          <input type="text" id="task" />
+          <TaskInput
+            placeholder="Dê um nome para o seu projeto"
+            type="text"
+            id="task"
+          />
 
           <label htmlFor="minutesAmount">durante</label>
-          <input type="number" id="minutesAmount" />
+          <MinutesAmountInput
+            placeholder="00"
+            type="number"
+            id="minutesAmount"
+          />
           <span>minutos</span>
         </FormContainer>
 
