@@ -1,4 +1,4 @@
-import { Play } from "phosphor-react";
+import { HandPalm, Play } from "phosphor-react";
 import {
   StartCountDownButton,
   CountDownContainer,
@@ -7,6 +7,7 @@ import {
   Separator,
   TaskInput,
   MinutesAmountInput,
+  StopCountDownButton,
 } from "./styles";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,6 +30,7 @@ interface Cycle {
   task: string;
   minutesAmount: number;
   startDate: Date;
+  interruptedDate?: Date;
 }
 
 export function Home() {
@@ -93,6 +95,19 @@ export function Home() {
   const task = watch("task");
   const isSubmitDisabled = !task;
 
+  const handleInterruptCycle = () => {
+    setCycles(
+      cycles.map((cycle) => {
+        if (cycle.id === activeCycleId) {
+          return { ...cycle, interruptedDate: new Date() };
+        } else {
+          return cycle;
+        }
+      })
+    );
+    setActiveCycleId(null);
+  };
+
   return (
     <HomeContainer>
       <form action="" onSubmit={handleSubmit(handleCreateNewCycle)}>
@@ -103,6 +118,7 @@ export function Home() {
             placeholder="Dê um nome para o seu projeto"
             type="text"
             id="task"
+            disabled={!!activeCycle}
             {...register("task")}
           />
 
@@ -119,6 +135,7 @@ export function Home() {
             id="minutesAmount"
             step={5}
             min={5}
+            disabled={!!activeCycle}
             max={60}
             {...register("minutesAmount", { valueAsNumber: true })}
           />
@@ -133,9 +150,15 @@ export function Home() {
           <span>{seconds[1]}</span>
         </CountDownContainer>
 
-        <StartCountDownButton type="submit" disabled={isSubmitDisabled}>
-          <Play size={24} /> Começar
-        </StartCountDownButton>
+        {activeCycle ? (
+          <StopCountDownButton onClick={handleInterruptCycle} type="button">
+            <HandPalm size={24} /> Interromper
+          </StopCountDownButton>
+        ) : (
+          <StartCountDownButton type="submit" disabled={isSubmitDisabled}>
+            <Play size={24} /> Começar
+          </StartCountDownButton>
+        )}
       </form>
     </HomeContainer>
   );
